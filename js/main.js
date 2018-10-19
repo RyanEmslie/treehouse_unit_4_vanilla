@@ -1,7 +1,6 @@
-console.clear();
-let gameType = "PvP";
-let playerOne = "Joe";
-let playerTwo = "Dan";
+let gameType = "";
+let playerOne = "";
+let playerTwo = "";
 let playerComputer = "Computer";
 let count = 0;
 let randomIndex = [];
@@ -22,6 +21,8 @@ player1TestMoves = [];
 player2TestMoves = [];
 player1Moves = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 };
 player2Moves = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0 };
+aRandomArray();
+initialize();
 
 // ***************************************************************
 // **********************      SETUP   *****************************
@@ -30,6 +31,8 @@ function initialize() {
   hideBtn = document.querySelector("#startButton").classList.add("hidden");
 } //initialize()
 
+//
+//Function displays corect name input based on game type selected
 function playerNames() {
   gameType = "";
   hideClassById("playerOneName");
@@ -49,6 +52,8 @@ function playerNames() {
   showClassById("startButton");
 } //playerNames()
 
+//
+//Function called after play correctly enters name - attached to button
 function startGame() {
   playerOne = document.getElementById("playerOneName").value;
   playerTwo = document.getElementById("playerTwoName").value;
@@ -85,47 +90,6 @@ function displayPlayers(x, y) {
   document.getElementById("displayName2").textContent = y;
 } //displayPlayers
 
-function restartGame() {
-  hideClassById("finish");
-  showClassById("start");
-  hideClassById("startButton");
-  document.getElementById("playerOneName").value = "";
-  document.getElementById("playerTwoName").value = "";
-  document.getElementsByName("gameType")[0].checked = false;
-  document.getElementsByName("gameType")[1].checked = false;
-  hideClassById("playerTwoName");
-  hideClassById("playerOneName");
-  document.querySelector("#finish").classList.remove("screen-win-one");
-  document.querySelector("#finish").classList.remove("screen-win-two");
-  document.querySelector("#finish").classList.remove("screen-win-tie");
-  document.querySelector("#finish").classList.add("hidden");
-  for (let i = 0; i < 10; i++) {
-    player1Moves[i] = 0;
-    player2Moves[i] = 0;
-    player1TestMoves[i] = 0;
-    player2TestMoves[i] = 0;
-    totalMoves = [];
-    count = 0;
-  }
- 
-  function empty() {
-	  temp2Array.length = 0;
-	  tempArray.length = 0;
-	  
-  }
-  empty();
-  
-  for (let i = 0; i < 9; i++) {
-    let test = document.querySelector("ul.boxes");
-    if (test.children[i].classList.contains("box-filled-1")) {
-      test.children[i].classList.remove("box-filled-1");
-    } else if (test.children[i].classList.contains("box-filled-2")) {
-      test.children[i].classList.remove("box-filled-2");
-    }
-  }
-  aRandomArray();
-} //restartGame()
-
 function hideClassById(id) {
   document.getElementById(id).classList.add("hidden");
 } //hideClassById()
@@ -133,8 +97,8 @@ function hideClassById(id) {
 function showClassById(id) {
   document.getElementById(id).classList.remove("hidden");
 } //showClassById
-// ******************************************************
 
+// ******************************************************
 //*****************************************************
 // **********EVENTLISTENERS**************************
 //*****************************************************
@@ -142,7 +106,6 @@ document.querySelector("ul.boxes").addEventListener("mouseout", function(e) {
   e.target.removeAttribute("style");
 }); // eventListener to hover image over available tile
 document.querySelector("ul.boxes").addEventListener("mouseover", function(e) {
-	
   if (
     e.target.classList.contains("box-filled-1") ||
     e.target.classList.contains("box-filled-2")
@@ -158,11 +121,12 @@ document.querySelector("ul.boxes").addEventListener("mouseover", function(e) {
 
 //Click function only for Player 1
 document.querySelector("ul.boxes").addEventListener("click", function(e) {
-  //if space is already taken nothing happens
+  //if space is already taken nothing happens prevents click
   if (
     e.target.classList.contains("box-filled-1") ||
     e.target.classList.contains("box-filled-2")
-  ) {return;
+  ) {
+    return;
   } else {
     //nested conditional if symbol is placed on open space based active class
     if (document.getElementById("player1").classList.contains("active")) {
@@ -171,7 +135,6 @@ document.querySelector("ul.boxes").addEventListener("click", function(e) {
       player1Moves[num] = player1Moves[num] + 1;
       player1TestMoves.push(num);
       totalMoves.push([parseInt(num)]);
-
       count = count + 1;
     } else if (
       document.getElementById("player2").classList.contains("active")
@@ -184,12 +147,7 @@ document.querySelector("ul.boxes").addEventListener("click", function(e) {
     }
   }
   checkWinner();
-  // console.log('Player 1 Moves');
-  // console.log( JSON.stringify(player1Moves) );
-  // console.log('Player 2 Moves');
-  // console.log( JSON.stringify(player2Moves) );
 }); //eventListener click to place tile and change player turn
-// *************************************************************
 
 //Function for game logic
 const checkWinner = () => {
@@ -259,16 +217,17 @@ function computerTurnEasy() {
   checkWinner();
 } //function computerTurnEasy
 
+//function for medium play - defensive mode - prevents player 1 from winning (mostly)
 function computerTurnMedium() {
   document.getElementById("player2").classList.add("active");
   document.getElementById("player1").classList.remove("active");
-//  console.log(`winning moves in turnmedium ${winningMoves}`)
-//  console.log(`total moves in turnmedium ${totalMoves}`)
-function emptyArray(){
-	temp2Array.length = 0;
-	tempArray.length = 0;
-}
-emptyArray();
+
+  function emptyArray() {
+    temp2Array.length = 0;
+    tempArray.length = 0;
+  }
+  emptyArray();
+  //For loop that cycles through possible winning moves and filters out options that contain non-available spaces and pushes best move into new array
   for (let k = 0; k < winningMoves.length; k++) {
     for (let j = 0; j < winningMoves.length; j++) {
       for (let i = 0; i < totalMoves.length; i++) {
@@ -281,7 +240,7 @@ emptyArray();
     }
   }
   console.log(`Temp 1 Array:  ${JSON.stringify(tempArray)}`);
-
+  //newly created array is filtered to find wining move (best defensive play)
   for (let c = 0; c < tempArray.length; c++) {
     for (let b = 0; b < tempArray.length; b++) {
       for (let a = 0; a < totalMoves.length; a++) {
@@ -295,49 +254,48 @@ emptyArray();
   }
   console.log(`Temp 2 Array:   ${JSON.stringify(temp2Array)}`);
 
+  //if winning array is empty a spot will be chosen at ranom.  Similar to Easy mode
   if (temp2Array.length > 0) {
     playWinningMove();
   } else {
     randomSelector();
   }
 
-
+  //Function uses newly create array to place position on the board.
   function playWinningMove() {
-	  console.log(`Play Winning Move Called`)
+    console.log(`Play Winning Move Called`);
     for (let i = 0; i < temp2Array.length; i++) {
       if (temp2Array[i].length === 1) {
         console.log(`This is the correct move ${temp2Array[i]}`);
-		let testNum = (temp2Array[i][0] - 1);
-		console.log(`This is testNum: ${testNum}`)
+        let testNum = temp2Array[i][0] - 1;
+        console.log(`This is testNum: ${testNum}`);
         let test = document.querySelectorAll(".box")[testNum];
         if (
           test.classList.contains("box-filled-1") ||
           test.classList.contains("box-filled-2")
         ) {
         } else {
-			// console.log(`This is where we mark the correct square`)
           document
             .querySelectorAll(".box")
             [testNum].classList.add("box-filled-2");
           testNum = testNum + 1;
           player2Moves[testNum] = player2Moves[testNum] + 1;
           player2TestMoves.push(testNum);
-		  totalMoves.push([testNum]);
-		  count = count + 1;
-		  removeWinning();
-		  break;
-        //   computerBlockMove();
+          totalMoves.push([testNum]);
+          count = count + 1;
+          removeWinning();
+          break;
+          //   computerBlockMove();
         }
       } else {
         randomSelector();
       }
-	}
-	// removeWinning();
+    }
   } //function playWinningMove
 
+  //Used to randomly place available spot
   function randomSelector() {
-	////random selector
-	console.log(`Random Selector Was Called`)
+    console.log(`Random Selector Was Called`);
     for (let i = 0; i < randomIndex.length; i++) {
       let testNum = randomIndex[i];
       let test = document.querySelectorAll(".box")[testNum];
@@ -359,15 +317,10 @@ emptyArray();
       }
     } //for loop
     removeWinning();
-    // computerBlockMove();
   } //funciton randomSelector()
+
   checkWinner();
 } //computerTurnMedium
-
-function computerBlockMove() {
-  console.log(`winning move: ${JSON.stringify(winningMoves)}`);
-  console.log(`total moves:  ${JSON.stringify(totalMoves)}`);
-} //computerBlockMove()
 
 //changes the state of the player
 function changePlayer() {
@@ -398,21 +351,27 @@ function changePlayer() {
   }
 } //changePlayer
 
-//*************************GAME OVER */
+//function display either winner or loser
 function gameOver() {
   if (document.getElementById("player1").classList.contains("active")) {
     console.log("Player 1 Winner");
-    document.querySelector(".message").innerHTML = `PLAYER 1 WINNER`;
+    document.querySelector(".message").innerHTML = `${playerOne} WINNER`;
     document.querySelector("#finish").classList.add("screen-win-one");
   } else if (document.getElementById("player2").classList.contains("active")) {
     console.log("Player 2 Winner");
-    document.querySelector(".message").innerHTML = `PLAYER 2WINNER`;
     document.querySelector("#finish").classList.add("screen-win-two");
+    if (gameType === "PvP") {
+    document.querySelector(".message").innerHTML = `${playerTwo} WINNER`;
+  }else {
+    document.querySelector(".message").innerHTML = `COMPUTER WINNER`;
+  }
+    
   }
   hideClassById("board");
   showClassById("finish");
 } //function gameOver()
 
+//function that creates a random array 9 unique numbers
 function aRandomArray() {
   randomIndex = [];
   for (let i = 0; i < 9; i++) {
@@ -423,7 +382,7 @@ function aRandomArray() {
       i = i - 1;
     }
   }
-}
+} //aRandomArray()
 
 function removeWinning() {
   //game logic
@@ -435,13 +394,10 @@ function removeWinning() {
           //if matching value found, remove entire array splic(indexStar, indexEnd)
           winningMoves.splice(i, 1);
           //if array is spliced, index number needs to be reduced by 1
-          i--;
+          i--;s
           break;
         }
       }
     }
   }
-}
-
-aRandomArray();
-initialize();
+} //removeWinning();
